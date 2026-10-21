@@ -1,0 +1,29 @@
+{
+  "name": "@rnx-kit/docsite",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "astro build",
+    "format": "oxfmt package.json $(git ls-files '*.[jt]s' '*.md' '*.mdx')",
+    "preview": "astro preview",
+    "start": "astro dev"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.42.5",
+    "astro": "^7.3.6",
+    "starlight-links-validator": "^0.26.0"
+  },
+  "devDependencies": {
+    "@astrojs/ts-content-mapper": "^0.2.0",
+    "oxfmt": "catalog:",
+    "typescript": "catalog:"
+  },
+  "resolutions": {
+    "@expressive-code/core/postcss-nested": "^7.0.2"
+  },
+  "engines": {
+    "node": ">=22.12"
+  },
+  "packageManager": "yarn@4.18.1"
+}

@@ -1,0 +1,119 @@
+import type {
+  AlignDepsConfig,
+  Capability,
+  KitType,
+} from "@rnx-kit/types-kit-config";
+import type { PackageManifest } from "@rnx-kit/types-node";
+import type { Reporter } from "./reporter.ts";
+
+export type AlignDepsOptions = {
+  kitType: KitType;
+  alignDeps: Required<AlignDepsConfig>;
+  manifest: PackageManifest;
+};
+
+export type Change =
+  | { type: "added"; dependency: string; target: string }
+  | { type: "changed"; dependency: string; target: string; current: string }
+  | { type: "removed"; dependency: string };
+
+export type Changes = {
+  dependencies: Change[];
+  peerDependencies: Change[];
+  devDependencies: Change[];
+  capabilities: { type: "unmanaged"; dependency: string; capability: string }[];
+};
+
+export type DiffMode = "strict" | "allow-subset";
+
+export type Options = {
+  presets: string[];
+  checkOverrides?: boolean;
+  loose?: boolean;
+  noUnmanaged?: boolean;
+  verbose?: boolean;
+  write?: boolean;
+  diffMode?: DiffMode;
+  excludePackages?: string[];
+  requirements?: string[];
+};
+
+export type Args = Pick<Options, "loose" | "verbose" | "write"> & {
+  "check-overrides"?: boolean;
+  "diff-mode"?: string;
+  "exclude-packages"?: string | number;
+  "export-catalogs"?: string;
+  "no-unmanaged"?: boolean;
+  "set-version"?: string | number;
+  init?: string;
+  packages?: (string | number)[];
+  presets?: string | number | string[];
+  requirements?: string | number | string[];
+  why?: string;
+};
+
+export type DependencyType = "direct" | "development" | "peer";
+
+export type ErrorCode =
+  | "success"
+  | "excluded"
+  | "invalid-app-requirements"
+  | "invalid-configuration"
+  | "invalid-manifest"
+  | "legacy-configuration"
+  | "missing-react-native"
+  | "not-configured"
+  | "unsatisfied";
+
+export type CommandFinalizer = (
+  manifestPath: string,
+  reporter?: Reporter
+) => void;
+
+export type Command =
+  | (((manifest: string) => ErrorCode) & {
+      isRootCommand?: false;
+      /**
+       * Called after all packages have been checked, with the path to the
+       * manifest of the workspace root.
+       */
+      finalize?: CommandFinalizer;
+    })
+  | ((() => ErrorCode) & { isRootCommand: true });
+
+export type MetaPackage = {
+  name: "#meta";
+  capabilities: Capability[];
+  devOnly?: boolean;
+  [key: symbol]: string;
+};
+
+export type Package = {
+  name: string;
+  version: string;
+  capabilities?: Capability[];
+  devOnly?: boolean;
+  [key: symbol]: string;
+};
+
+export type Profile = Readonly<Record<Capability, MetaPackage | Package>>;
+
+export type Preset = Record<string, Profile>;
+
+export type ExcludedPackage = Package & {
+  reason: string;
+
+  /**
+   * The capability that supersedes this package, if any. When set, `align-deps`
+   * will remove this (stale/renamed) package, but only when the capability is
+   * being managed.
+   */
+  capability?: Capability;
+};
+
+export type ManifestProfile = Pick<
+  Required<PackageManifest>,
+  "dependencies" | "devDependencies" | "peerDependencies"
+> & {
+  unmanagedCapabilities: Record<string, string | undefined>;
+};

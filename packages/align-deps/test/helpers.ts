@@ -1,0 +1,34 @@
+import type { Capability } from "@rnx-kit/types-kit-config";
+import { createRequire } from "node:module";
+import { URL, fileURLToPath } from "node:url";
+import type { Package, Profile } from "../src/types.ts";
+
+export function defineRequire(path: string, base: string | URL) {
+  global.require = createRequire(new URL(path, base));
+}
+
+export function undefineRequire() {
+  global.require = undefined;
+}
+
+export function fixturePath(name: string) {
+  return fileURLToPath(new URL(`./__fixtures__/${name}`, import.meta.url));
+}
+
+export function pickPackage(profile: Profile, capability: string): Package {
+  const pkg = profile[capability];
+  if (!pkg) {
+    throw new Error(`Could not resolve '${capability}'`);
+  } else if (!("version" in pkg)) {
+    throw new Error(`'${capability}' is a meta package`);
+  }
+
+  return pkg;
+}
+
+export function packageVersion(
+  profile: Profile,
+  capability: Capability
+): string {
+  return pickPackage(profile, capability).version;
+}

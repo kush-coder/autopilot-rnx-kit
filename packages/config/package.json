@@ -1,0 +1,55 @@
+{
+  "name": "@rnx-kit/config",
+  "version": "1.0.0",
+  "description": "Define and query information about a kit package",
+  "homepage": "https://github.com/microsoft/rnx-kit/tree/main/packages/config#readme",
+  "license": "MIT",
+  "author": {
+    "name": "Microsoft Open Source",
+    "email": "microsoftopensource@users.noreply.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/microsoft/rnx-kit",
+    "directory": "packages/config"
+  },
+  "files": [
+    "lib/**/*.d.ts",
+    "lib/**/*.js",
+    "src"
+  ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "typescript": "./src/index.ts",
+      "default": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "rnx-kit-scripts build",
+    "format": "rnx-kit-scripts format",
+    "lint": "rnx-kit-scripts lint",
+    "test": "rnx-kit-scripts test"
+  },
+  "dependencies": {
+    "@rnx-kit/tools-node": "workspace:^",
+    "@rnx-kit/tools-packages": "workspace:^",
+    "@rnx-kit/types-bundle-config": "workspace:^",
+    "@rnx-kit/types-kit-config": "workspace:^",
+    "@rnx-kit/types-node": "workspace:^",
+    "lodash.merge": "^4.6.2"
+  },
+  "devDependencies": {
+    "@rnx-kit/scripts": "workspace:*",
+    "@rnx-kit/tsconfig": "workspace:*",
+    "@types/lodash.merge": "^4.6.9",
+    "@types/node": "^24.0.0",
+    "metro": "^0.84.0"
+  },
+  "engines": {
+    "node": ">=20.18"
+  }
+}

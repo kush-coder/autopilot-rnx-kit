@@ -1,0 +1,38 @@
+import type { MetroPlugin } from "@rnx-kit/metro-serializer";
+import * as nodefs from "node:fs";
+import type { WriteThirdPartyNoticesOptions } from "./types.ts";
+import {
+  gatherModulesFromSources,
+  writeThirdPartyNoticesFromMap,
+} from "./write-third-party-notices.ts";
+
+export { writeThirdPartyNoticesCommand } from "./commander.ts";
+export { writeThirdPartyNotices } from "./write-third-party-notices.ts";
+
+export function ThirdPartyNotices(
+  inputOptions: Partial<WriteThirdPartyNoticesOptions>,
+  /** @internal */ fs = nodefs
+): MetroPlugin {
+  return (_entryPoint, _preModules, graph, serializerOptions) => {
+    if (serializerOptions.dev) {
+      return;
+    }
+
+    const options = {
+      rootPath: serializerOptions.projectRoot,
+      sourceMapFile: serializerOptions.sourceMapUrl || "",
+      json: false,
+      ...inputOptions,
+    };
+
+    const sources = Array.from(graph.dependencies.keys());
+    const moduleNameToPath = gatherModulesFromSources(sources, options, fs);
+    writeThirdPartyNoticesFromMap(options, moduleNameToPath, fs);
+  };
+}
+
+ThirdPartyNotices.type = "serializer";
+
+// `export default` required for plugin interface
+// oxlint-disable-next-line no-default-export
+export default ThirdPartyNotices;

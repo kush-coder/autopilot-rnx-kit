@@ -1,0 +1,59 @@
+// @ts-check
+
+/** @type {import("@yarnpkg/types")} */
+const { defineConfig } = require("@yarnpkg/types");
+
+module.exports = defineConfig({
+  constraints: async ({ Yarn }) => {
+    const root = Yarn.workspace({ cwd: "." });
+    if (!root) {
+      throw new Error("Root workspace not found");
+    }
+
+    const { author, repository: origin, engines } = root.manifest;
+
+    for (const workspace of Yarn.workspaces()) {
+      const { name, private: isPrivate, experimental } = workspace.manifest;
+      if (isPrivate && !experimental) {
+        workspace.set("version", "0.0.0");
+      }
+
+      workspace.set("author.name", author.name);
+      workspace.set("author.email", author.email);
+
+      const homepage =
+        workspace === root
+          ? `${origin.url}#readme`
+          : `${origin.url}/tree/main/${workspace.cwd}#readme`;
+      workspace.set("homepage", homepage);
+
+      workspace.set("repository.type", origin.type);
+      workspace.set("repository.url", origin.url);
+
+      if (workspace !== root) {
+        workspace.set("repository.directory", workspace.cwd);
+      }
+
+      if (name.startsWith("@rnx-kit/yarn-plugin-")) {
+        workspace.set("engines.node", engines.node);
+        workspace.set("engines.yarn", ">=4.0");
+      }
+    }
+
+    // Internal dev dependencies should always point to the local workspace
+    for (const dependency of Yarn.dependencies({ type: "devDependencies" })) {
+      if (Yarn.workspace({ ident: dependency.ident })) {
+        dependency.update("workspace:*");
+      }
+    }
+
+    // Internal dependencies of published packages should point to the local
+    // workspace; Yarn replaces `workspace:^` with `^<version>` on publish
+    for (const dependency of Yarn.dependencies({ type: "dependencies" })) {
+      if (Yarn.workspace({ ident: dependency.ident })) {
+        const isPrivate = dependency.workspace.manifest.private;
+        dependency.update(isPrivate ? "workspace:*" : "workspace:^");
+      }
+    }
+  },
+});

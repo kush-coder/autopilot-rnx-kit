@@ -1,0 +1,40 @@
+# @rnx-kit/lint-package
+
+## 0.2.2
+
+### Patch Changes
+
+- Updated dependencies [f35ba6b]
+  - @rnx-kit/config@1.0.0
+  - @rnx-kit/types-kit-config@2.0.0
+  - @rnx-kit/types-node@1.0.1
+
+## 0.2.1
+
+### Patch Changes
+
+- 1baf028: Reverted accidental downgrade of minimum Node version
+
+## 0.2.0
+
+### Minor Changes
+
+- fe496b4: Use `node:util.styleText`, bumping minimum Node version to 20.18
+
+### Patch Changes
+
+- Updated dependencies [fe496b4]
+  - @rnx-kit/config@0.9.0
+
+## 0.1.0
+
+### Minor Changes
+
+- 00c75ee: Initial publish of @rnx-kit/lint-package with a package validation context
+
+### Patch Changes
+
+- Updated dependencies [f53f04d]
+- Updated dependencies [00c75ee]
+  - @rnx-kit/config@0.8.0
+  - @rnx-kit/lint-json@0.2.0

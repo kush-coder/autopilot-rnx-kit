@@ -1,0 +1,9 @@
+{
+  "extends": "@rnx-kit/tsconfig/tsconfig.node.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "lib",
+    "experimentalDecorators": true
+  },
+  "include": ["src"]
+}

@@ -1,0 +1,6 @@
+{
+  "$schema": "https://unpkg.com/@changesets/config@4.0.0/schema.json",
+  "commit": ["@changesets/cli/commit", { "skipCI": false }],
+  "access": "public",
+  "baseBranch": "origin/main"
+}
